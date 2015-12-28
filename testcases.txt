@@ -1,0 +1,155 @@
+Authored by Daniel Tsioni (Section 02, 150007096) and Gavriel Tsioni (Section 01, 150005575)
+
+* Any of these test cases can be built by using "make (name of test case)"
+	For example, to build test1:
+	"make test1"
+
+* They can then be run by using "./malloc"
+
+* Testcases will overwrite when they build, since they are all exporting to an exectuable named 'malloc'.
+
+* All of these test cases have a compiler directive which states:
+
+	#define malloc(x) mymalloc(x, __FILE__, __LINE__);
+	#define free(x) myfree(x, __FILE__, __LINE__);
+		
+	These are assumed below, but not included. They are included in the actual test case .c files.
+
+* All test case .c files have a commented line as the last line which calls the printList() function, a debug function which shows the linked list that manages the memory.
+	You can uncomment this line to view how the code has changed the dynamic memory.
+
+--------------------------------PA3 Test Cases:--------------------------------
+
+test1:
+This shows all of the error checks, including our saturation solution.
+	
+	Code:
+
+		int main(int argc, char** argv){
+			malloc(0);
+	
+			int x;
+			free(&x);
+	
+			char* p = (char *)malloc(200);
+			free(p+10);
+	
+			free(p);
+			free(p);
+	
+			malloc(10000);
+	
+			//Uncomment to view list:
+			//printList();
+	
+			return 0;
+		}
+
+	Expected Output:
+		
+		Error [test1.c:13]: Invalid allocation size.
+		Error [test1.c:16]: Freeing of pointer that was never allocated.
+		Error [test1.c:19]: Freeing of pointer in dynamic memory that was not returned from malloc.
+		Error [test1.c:22]: Redundant freeing of pointer.
+		Error [test1.c:24]: No space found for requested allocation size.
+
+test2:
+This shows our fragmentation solution, where smaller allocations are allocated from the back and larger ones are allocated from the front.
+
+	Code:
+		int main(int argc, char** argv){
+	
+			void* test1;
+			test1 = malloc(100);
+			void* test2;
+			test2 = malloc(200);
+			void* test3;
+			test3 = malloc(300);
+			void* test4;
+			test4 = malloc(400);
+			void* test5;
+			test5 = malloc(500);
+			void* test6;
+			test6 = malloc(600);
+	
+			//Uncomment to view list:
+			//printList();
+	
+			return 0;
+		}
+
+	Expected Output:
+		
+		\no output
+
+test3:
+This shows our malloc being used like normal malloc to store a string and print from it.
+
+	Code:
+		int main(int argc, char** argv){
+	
+			char* string = (char *)malloc(12);
+			string[0] = 'h';
+			string[1] = 'e';
+			string[2] = 'l';
+			string[3] = 'l';
+			string[4] = 'o';
+			string[5] = ' ';
+			string[6] = 'w';
+			string[7] = 'o';
+			string[8] = 'r';
+			string[9] = 'l';
+			string[10] = 'd';
+			string[11] = '\0';
+			printf("%s\n",string);
+			free(string);
+	
+			//Uncomment to view list:
+			//printList();
+	
+			return 0;
+		}
+
+	Expected Output:
+		
+		hello world
+
+test4:
+This shows a more complicated test case, and shows our 'squashing' algorithm which combines adjacent free spaces.
+	Code:
+		int main(int argc, char** argv){
+	
+			void* test1 = malloc(10);
+			void* test2 = malloc(13);
+			void* test3;
+			test3 = malloc(15);
+			int* test4;
+			test4 = (int *)malloc(16);
+			void* test5;
+			test5 = malloc(25);
+			double* test6 = (double *)malloc(78);
+			void* test7 = malloc(25);
+			int* test8 = (int *)malloc(98);
+			void* test9 = malloc(2);
+			void* test10;
+			test10 = malloc(3);	
+			free(test9);
+			free(test8);
+			free(test7);	
+			void* test11;
+			test11 = malloc(3000);	
+			free(test1);
+			free(test2);
+			free(test6);
+	
+			//Uncomment to view list:
+			//printList();
+	
+			return 0;
+		}
+
+	Expected Output:
+		
+		\no output
+
+End of testcases.
