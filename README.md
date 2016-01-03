@@ -10,4 +10,4 @@ An implementation of malloc() and free() in C that detects various user errors i
 
 * Saturation of dynamic memory.
 
-* Memory fragmentation
+* Memory fragmentation.
